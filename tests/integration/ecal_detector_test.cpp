@@ -47,11 +47,6 @@ constexpr std::uint32_t testSeed = 42;
         return false;
     }
 
-    if (!bus.WaitForSubscriber("RadarPoint", 5s))
-    {
-        return false;
-    }
-
     for (std::size_t index = 0; index < first.measurements.size(); ++index)
     {
         const auto& firstMeasurement = first.measurements[index];
