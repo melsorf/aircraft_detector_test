@@ -132,10 +132,6 @@ void EcalTestBus::OnRadarPoint(const eCAL::SReceiveCallbackData& data)
     {
         return;
     }
-    {
-        std::lock_guard lock(m_mutex);
-        ++m_radarPointCount;
-    }
     m_condition.notify_all();
 }
 

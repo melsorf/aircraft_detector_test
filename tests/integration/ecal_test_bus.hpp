@@ -79,8 +79,6 @@ private:
     std::mutex m_mutex;
     std::condition_variable m_condition;
 
-    std::size_t m_radarPointCount{0};
-
     std::vector<TargetStatus> m_statuses;
     std::vector<TargetLost> m_lost;
 };
