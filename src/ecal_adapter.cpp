@@ -5,9 +5,9 @@
 #include <string>
 
 namespace {
-constexpr char radarPointTopic[] = "RadarPoint";
-constexpr char targetStatusTopic[] = "TargetStatus";
-constexpr char targetLostTopic[] = "TargetLost";
+constexpr const char* radarPointTopic = "RadarPoint";
+constexpr const char* targetStatusTopic = "TargetStatus";
+constexpr const char* targetLostTopic = "TargetLost";
 
 template <typename Message>
 bool Deserialize(const eCAL::SReceiveCallbackData& data, Message& message)

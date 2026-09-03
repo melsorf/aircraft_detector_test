@@ -7,9 +7,9 @@
 #include <utility>
 
 namespace {
-constexpr char radarPointTopic[] = "RadarPoint";
-constexpr char targetStatusTopic[] = "TargetStatus";
-constexpr char targetLostTopic[] = "TargetLost";
+constexpr const char* radarPointTopic = "RadarPoint";
+constexpr const char* targetStatusTopic = "TargetStatus";
+constexpr const char* targetLostTopic = "TargetLost";
 
 constexpr EcalTestBus::Timeout radarPointDeliveryTimeout{1000};
 
