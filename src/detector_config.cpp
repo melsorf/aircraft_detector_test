@@ -9,7 +9,7 @@
 namespace {
 
 template <typename T>
-T Required(const YAML::Node& root, const char* name)
+T GetConfigField(const YAML::Node& root, const char* name)
 {
     const auto node = root[name];
     if (!node)
@@ -44,10 +44,10 @@ Detector::Config Load(const std::filesystem::path& path)
     }
 
     return {
-        .minSpeed = Required<double>(root, "min_speed"),
-        .maxSpeed = Required<double>(root, "max_speed"),
-        .minPoints = Required<std::size_t>(root, "min_points"),
-        .lostTimeout = std::chrono::milliseconds{Required<std::int64_t>(root, "lost_timeout_ms")}
+        .minSpeed = GetConfigField<double>(root, "min_speed"),
+        .maxSpeed = GetConfigField<double>(root, "max_speed"),
+        .minPoints = GetConfigField<std::size_t>(root, "min_points"),
+        .lostTimeout = std::chrono::milliseconds{GetConfigField<std::int64_t>(root, "lost_timeout_ms")}
     };
 }
 } // namespace detector_config
