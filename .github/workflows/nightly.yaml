@@ -1,12 +1,8 @@
 name: Nightly
 
 on:
-  pull_request:
-
-  push:
-    branches:
-      - main
-      - master
+  schedule:
+    - cron: "0 2 * * *" 
 
   workflow_dispatch:
 
