@@ -1,0 +1,95 @@
+name: Nightly
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - main
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  integration-tests:
+    name: Integration tests
+    runs-on: ubuntu-24.04
+
+    env:
+      BUILD_DIR: build
+      ECAL_VERSION: 6.1.1
+      ECAL_PACKAGE: ecal_6.1.1-noble_amd64.deb
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            ninja-build \
+            pkg-config \
+            protobuf-compiler \
+            libprotobuf-dev \
+            libprotoc-dev \
+            libyaml-cpp-dev \
+            libgtest-dev \
+            wget
+
+      - name: Install eCAL
+        run: |
+          wget --no-verbose \
+            "https://github.com/eclipse-ecal/ecal/releases/download/v${ECAL_VERSION}/${ECAL_PACKAGE}" \
+            -O "/tmp/${ECAL_PACKAGE}"
+
+          sudo apt-get install -y \
+            "/tmp/${ECAL_PACKAGE}"
+
+      - name: Find eCAL CMake package
+        run: |
+          ECAL_CONFIG="$(
+            dpkg -L ecal |
+            grep -E '/eCALConfig\.cmake$' |
+            head -n 1
+          )"
+
+          if [ -z "${ECAL_CONFIG}" ]; then
+            echo "ERROR: eCALConfig.cmake was not found."
+            echo "Installed eCAL files:"
+            dpkg -L ecal
+            exit 1
+          fi
+
+          ECAL_DIR="$(dirname "${ECAL_CONFIG}")"
+
+          echo "Found eCAL CMake package:"
+          echo "${ECAL_CONFIG}"
+
+          echo "eCAL_DIR=${ECAL_DIR}" >> "${GITHUB_ENV}"
+
+      - name: Configure
+        run: |
+          cmake \
+            -S . \
+            -B "${BUILD_DIR}" \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=ON \
+            -DBUILD_AIRCRAFT_DETECTOR=ON \
+            -DeCAL_DIR="${eCAL_DIR}"
+
+      - name: Build
+        run: |
+          cmake \
+            --build "${BUILD_DIR}" \
+            --parallel
+
+      - name: Run integration tests
+        run: |
+          ctest \
+            --test-dir "${BUILD_DIR}" \
+            --output-on-failure

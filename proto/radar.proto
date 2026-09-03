@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message RadarPoint {
+    uint32 track_id = 1;
+
+    double x = 2;
+    double y = 3;
+    double z = 4;
+}
+
+message TargetStatus {
+    uint32 track_id = 1;
+
+    double speed = 2;
+}
+
+message TargetLost {
+    uint32 track_id = 1;
+}
